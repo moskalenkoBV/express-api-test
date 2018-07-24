@@ -10,24 +10,57 @@ router.post('/', (req, res) => {
   const user = new Users({
     _id: new ObjectId(),
     email: data.email,
-    data: {
-      address: data.address,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      country: data.country,
-      nationality: data.nationality,
-    }
+    address: data.address,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    country: data.country,
+    nationality: data.nationality,
   })
   user.setPassword(data.password)
-  if(data.additionalAddress) {
-    user.data.extra = {
-      country: data.additionalCountry,
-      address: data.additionalAddress
-    }
+
+  if(data.addressAdditional) {
+    user.countryAdditional = data.countryAdditional
+    user.addressAdditional = data.addressAdditional
   }
   user.save()
     .then(userRecord => res.json({ user: userRecord.toAuthJSON() }))
     .catch(err => res.status(400).json({ error: parseErrors(err.errors) }))
+})
+
+router.post('/update', (req, res) => {
+  const { userData, token } = req.body
+  const user = new Users()
+  const userHandler = user.decodeJWT(token)
+  const userDataNew = {
+    firstName: userData.firstName,
+    lastName: userData.lastName,
+    address: userData.address,
+    nationality: userData.nationality,
+    password: user.setPassword(userData.password),
+    country: userData.country,
+    email: userData.email,
+    addressAdditional: userData.addressAdditional,
+    countryAdditional: userData.countryAdditional
+  }
+
+  Users.findOneAndUpdate({ _id: userHandler._id }, userDataNew, { new: true }).then(userRecord => {
+    if(userRecord) {
+      res.json({ userData: {
+        firstName: userRecord.firstName,
+        lastName: userRecord.lastName,
+        address: userRecord.address,
+        email: userRecord.email,
+        emailConfirm: userRecord.email,
+        country: userRecord.country,
+        nationality: userRecord.nationality,
+        addressAdditional: userRecord.addressAdditional,
+        countryAdditional: userRecord.countryAdditional
+      } })
+    }
+    else {
+      res.status(400).json({ error: "User does not exist" })
+    }
+  })
 })
 
 router.post('/login', (req, res) => {
@@ -40,6 +73,32 @@ router.post('/login', (req, res) => {
       else {
         res.status(400).json({ error: "Incorrect password" })
       }
+    }
+    else {
+      res.status(400).json({ error: "User does not exist" })
+    }
+  })
+})
+
+router.post('/userdata', (req, res) => {
+  const data = req.body
+  const user = new Users()
+  const userHandler = user.decodeJWT(data.token)
+
+  Users.findOne({ _id: userHandler._id }).then(user => {
+    if(user) {
+      const userData = {
+        email: user.email,
+        emailConfirm: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        address: user.address,
+        country: user.country,
+        nationality: user.nationality,
+        addressAdditional: user.addressAdditional,
+        countryAdditional: user.countryAdditional
+      }
+      res.json(userData)
     }
     else {
       res.status(400).json({ error: "User does not exist" })

@@ -6,16 +6,21 @@ import jwt from 'jsonwebtoken'
 const schema = new mongoose.Schema({
   email: {type: String, unique: true},
   passwordHash: String,
-  data: {
-    firstName: String,
-    lastName: String,
-    address: String,
-    country: String,
-    nationality: String,
-    extra: {
-      address: String,
-      country: String
-    }
+  firstName: String,
+  lastName: String,
+  address: String,
+  country: {
+    label: String,
+    value: String
+  },
+  nationality: {
+    label: String,
+    value: String
+  },
+  addressAdditional: String,
+  countryAdditional: {
+    label: String,
+    value: String
   }
 }, { timestamps: true })
 
@@ -30,10 +35,14 @@ schema.methods.isValidPassword = function isValidPassword(password) {
 schema.methods.generateJWT = function generateJWT() {
   return jwt.sign(
     {
-      email: this.email
+      _id: this._id
     },
     process.env.JWT_SECRET
   )
+}
+
+schema.methods.decodeJWT = function decodeJWT(token) {
+  return jwt.verify(token, process.env.JWT_SECRET)
 }
 
 schema.methods.toAuthJSON = function toAuthJSON() {

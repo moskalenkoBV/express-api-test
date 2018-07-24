@@ -3,6 +3,7 @@ import path from 'path'
 import mongoose from 'mongoose'
 import products from './routes/products'
 import users from './routes/users'
+import orders from './routes/orders'
 import bodyParse from 'body-parser'
 import dotenv from 'dotenv'
 import Promise from 'bluebird'
@@ -22,6 +23,8 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   next()
 })
+
+app.use('/api/orders', orders)
 
 app.use('/api/products', products)
 
