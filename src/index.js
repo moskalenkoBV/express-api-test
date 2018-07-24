@@ -1,6 +1,7 @@
 import express from 'express'
 import path from 'path'
 import mongoose from 'mongoose'
+import exphbs from 'express-handlebars'
 import products from './routes/products'
 import users from './routes/users'
 import orders from './routes/orders'
@@ -14,7 +15,15 @@ dotenv.config()
 
 mongoose.Promise = Promise
 
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true })
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true }, (error) => {
+  // if(error) {
+  //   process.exit(1);
+  // }
+})
+
+app.engine('handlebars', exphbs({extname: '.hbs'}))
+
+app.set('view engine', '.hbs')
 
 app.use(bodyParse.json())
 
