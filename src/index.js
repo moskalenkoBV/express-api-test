@@ -15,11 +15,11 @@ dotenv.config()
 
 mongoose.Promise = Promise
 
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true }, (error) => {
-  // if(error) {
-  //   process.exit(1);
-  // }
-})
+// mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true }, (error) => {
+//   // if(error) {
+//   //   process.exit(1);
+//   // }
+// })
 
 app.engine('handlebars', exphbs({extname: '.hbs'}))
 
