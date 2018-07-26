@@ -9,6 +9,10 @@ import exphbs from 'express-handlebars'
 
 const router = express.Router()
 
+router.get('/', (req, res) => {
+  res.json({ message: 'works!' })
+})
+
 router.post('/', (req, res) => {
   (async () => {
     const { email, products, firstName, lastName } = req.body
