@@ -43,4 +43,6 @@ app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'))
 })
 
-app.listen(3002, () => { console.log('Back is up on 3002') })
+app.listen(process.env.PORT || 4000, () => { console.log('Listening...') })
+
+export default app
