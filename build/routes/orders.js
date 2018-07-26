@@ -40,6 +40,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 var router = _express2.default.Router();
 
+router.get('/', function (req, res) {
+  res.json({ message: 'works!' });
+});
+
 router.post('/', function (req, res) {
   _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
     var _req$body, email, products, firstName, lastName, order, hbs, templateData, emailTemplate, transporter, mailOptions;
